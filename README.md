@@ -1,11 +1,22 @@
 # AStar
 
 ### Instructions:
-- Clone into prx_core_ws/src/prx_core/prx/utilities/
-    1. cd $PRACSYS_PATH/prx_core/prx/utilities/
-    2. git clone https://github.com/Mejikan/AStar.git
-    3. rm -rf applications
-    4. mv AStar applications
+
+** SCRIPT **
+```bash
+    git clone https://github.com/Mejikan/AStar.git
+    cd AStar
+    chmod +x mvtodir.sh
+    ./mvtodir.sh
+```
+** MANUAL **
+    - Clone into prx_core_ws/src/prx_core/prx/utilities/
+    ```bash
+        cd $PRACSYS_PATH/prx_core/prx/utilities/
+        git clone https://github.com/Mejikan/AStar.git
+        rm -rf applications
+        mv AStar applications
+    ```
 
 ---
 
