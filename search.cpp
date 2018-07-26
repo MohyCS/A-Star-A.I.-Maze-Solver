@@ -68,7 +68,16 @@ namespace prx
         {}
 
         search_t::~search_t()
-        {}
+        {
+            for (int i=0; i < rows; i++)
+            {
+                for (int j=0; j < columns; j++)
+                {
+                    free(cells[i][j]);
+                }
+                free(cells[i]);
+            }
+        }
 
         std::vector< std::pair<int, int> > search_t::search(std::string file_path,
             int initial_i, int initial_j, int goal_i, int goal_j)
@@ -168,6 +177,22 @@ namespace prx
 
                 visited.push_back(least);
             }
+        }
+
+        int search_t::manhattan_dist(cell_t* a, cell_t* b)
+        {
+            return manhattan_dist(a->row, a->column, b->row, b->column);
+        }
+
+        int search_t::manhattan_dist(int a_i, int a_j, int b_i, int b_j)
+        {
+            // does not take into account action costs which are calculated in nodes
+
+            // edge case: a and b reference same cell
+            if (a_i == b_i && a_j == b_j)
+                return 0;
+            else
+                return std::abs(a_j - a_i) + std::abs(b_j - b_i);
         }
 
         node_t* search_t::find_node_by_cell(std::list< node_t* > nodes, cell_t* cell)

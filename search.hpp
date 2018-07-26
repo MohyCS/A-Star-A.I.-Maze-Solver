@@ -47,12 +47,18 @@ namespace prx
           private:
             int rows = 0;
             int columns = 0;
+
+            // the 2D array of cells in the environment/graph
             cell_t*** cells = NULL;
 
             // perform a-star search
             std::vector< std::pair<int, int> > a_star(int initial_i, int initial_j, int goal_i, int goal_j);
 
-            // node list has node with cell
+            // get Manhattan distance between two coordinates
+            int manhattan_dist(cell_t* a, cell_t* b);
+            int manhattan_dist(int a_i, int a_j, int b_i, int b_j);
+
+            // return node in nodes (list) if the node is referencing the target cell, otherwise NULL
             node_t* find_node_by_cell(std::list< node_t* > nodes, cell_t* cell);
 
             // find the least est. cost node in a collection of nodes
