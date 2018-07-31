@@ -35,12 +35,16 @@ namespace prx
             // g
             int cost = 0;
             // h
-            int heuristic = 0;
+            int get_heur(cell_t* goal);
 
             // f
-            int get_cost_and_heur();
+            int get_cost_and_heur(cell_t* goal);
 
             std::vector< std::pair<int, int> > produce_path();
+
+            // get Manhattan distance between two coordinates
+            int manhattan_dist(cell_t* a, cell_t* b);
+            int manhattan_dist(int a_i, int a_j, int b_i, int b_j);
         };
 
         class search_t
@@ -55,15 +59,11 @@ namespace prx
             // perform a-star search
             std::vector< std::pair<int, int> > a_star(int initial_i, int initial_j, int goal_i, int goal_j);
 
-            // get Manhattan distance between two coordinates
-            int manhattan_dist(cell_t* a, cell_t* b);
-            int manhattan_dist(int a_i, int a_j, int b_i, int b_j);
-
             // return node in nodes (list) if the node is referencing the target cell, otherwise NULL
             node_t* find_node_by_cell(std::list< node_t* > nodes, cell_t* cell);
 
             // find the least est. cost node in a collection of nodes
-            node_t* least_est_cost_node(std::list< node_t* > nodes);
+            node_t* least_est_cost_node(std::list< node_t* > nodes, cell_t* goal);
             
             // given a cell's coordinates, return a vector containing left, right, up, down cells, if they exist
             // (vector type since it may have less than 4 cells)

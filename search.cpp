@@ -34,9 +34,31 @@ namespace prx
             cell = NULL;
         }
 
-        int node_t::get_cost_and_heur()
+        int node_t::get_heur(cell_t* goal)
         {
-            return this->cost + this->heuristic;
+            // heuristic calculation
+            return manhattan_dist(this->cell, goal);
+        }
+
+        int node_t::get_cost_and_heur(cell_t* goal)
+        {
+            return this->cost + this->get_heur(goal);
+        }
+
+        int node_t::manhattan_dist(cell_t* a, cell_t* b)
+        {
+            return manhattan_dist(a->row, a->column, b->row, b->column);
+        }
+
+        int node_t::manhattan_dist(int a_i, int a_j, int b_i, int b_j)
+        {
+            // does not take into account action costs which are calculated in nodes
+
+            // edge case: a and b reference same cell
+            if (a_i == b_i && a_j == b_j)
+                return 0;
+            else
+                return std::abs(a_j - a_i) + std::abs(b_j - b_i);
         }
 
         std::vector< std::pair<int, int> > node_t::produce_path()
@@ -118,6 +140,8 @@ namespace prx
             std::list< node_t* > open; // nodes which occupy the current search space
             std::list< node_t* > visited; // cells already visited before
 
+            cell_t* goal = this->cells[goal_i][goal_j];
+
             cell_t* initial_cell = this->cells[initial_i][initial_j];
             node_t* initial_node = new node_t(initial_cell, NULL);
             open.push_back(initial_node); // add initial node
@@ -125,7 +149,7 @@ namespace prx
             while (!open.empty())
             {
                 // search all open node for the least estimated cost
-                node_t* least = least_est_cost_node(open);
+                node_t* least = least_est_cost_node(open, goal);
                 open.remove(least);
                 visited.push_back(least);
 
@@ -160,6 +184,8 @@ namespace prx
                         if (open_node_same_cell->cost <= successor->cost)
                             continue;
                         // cannot do better cost than current open node, so skip successor
+
+                        // open remove?
                     }
                     else if (visited_node_same_cell != NULL)
                     {
@@ -182,22 +208,6 @@ namespace prx
             return path;
         }
 
-        int search_t::manhattan_dist(cell_t* a, cell_t* b)
-        {
-            return manhattan_dist(a->row, a->column, b->row, b->column);
-        }
-
-        int search_t::manhattan_dist(int a_i, int a_j, int b_i, int b_j)
-        {
-            // does not take into account action costs which are calculated in nodes
-
-            // edge case: a and b reference same cell
-            if (a_i == b_i && a_j == b_j)
-                return 0;
-            else
-                return std::abs(a_j - a_i) + std::abs(b_j - b_i);
-        }
-
         node_t* search_t::find_node_by_cell(std::list< node_t* > nodes, cell_t* cell)
         {
             for (auto &node : nodes)
@@ -208,12 +218,12 @@ namespace prx
             return NULL;
         }
 
-        node_t* search_t::least_est_cost_node(std::list< node_t* > nodes)
+        node_t* search_t::least_est_cost_node(std::list< node_t* > nodes, cell_t* goal)
         {
             node_t* least = NULL;
             for (auto &node : nodes)
             {
-                if (least == NULL || node->get_cost_and_heur() < least->get_cost_and_heur())
+                if (least == NULL || node->get_cost_and_heur(goal) < least->get_cost_and_heur(goal))
                     least = node;
             }
             return least;
