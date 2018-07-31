@@ -56,7 +56,6 @@ namespace prx
             while (ptr != NULL)
             {
                 path.push_back(std::make_pair(ptr->cell->row, ptr->cell->column));
-                std::cout << "r: " << ptr->cell->row << ", c: " << ptr->cell->column << "\n";
                 ptr = ptr->parent;
             }
 
@@ -101,15 +100,18 @@ namespace prx
             // READ data from file and map it to 2D array
             if (this->cells == NULL)
             {
-                std::cout << "*******************Execute once for init\n";
                 set_cells_from_file(file_path);
-            }
-            else
-            {
-                std::cout << "************NOT NULL!!!!!!!!!!!!!!!!!!!\n";
             }
 
             path = a_star(initial_i, initial_j, goal_i, goal_j);
+
+            // debug - output path
+            std::cout << "Generated path SOLUTION: \n";
+            for (auto &pair : path)
+            {
+                std::cout << "(" << pair.first << ", " << pair.second << ") -> ";
+            }
+            std::cout << "\n";
 
         	return path;
         }
@@ -144,8 +146,8 @@ namespace prx
                     if (adj_cell->row == goal_i && adj_cell->column == goal_j) // check if successor is goal
                     {
                         // debug
-                        std::cout << "succ i: " << adj_cell->row << ", succ j: " << adj_cell->column << "\n";
-                        std::cout << "goal i: " << goal_i << ", goal j: " << goal_j << "\n";
+                        //std::cout << "succ i: " << adj_cell->row << ", succ j: " << adj_cell->column << "\n";
+                        //std::cout << "goal i: " << goal_i << ", goal j: " << goal_j << "\n";
 
                         // if goal, make sure there is no open node with a lower cost
                         // (not implementing for now)
@@ -166,17 +168,20 @@ namespace prx
                         node_t* visited_node_same_cell = find_node_by_cell(visited, adj_cell);
                         if (visited_node_same_cell != NULL)
                         {
-                            if (open_node_same_cell->get_cost_and_heur() < successor->get_cost_and_heur())
+                            if (visited_node_same_cell->get_cost_and_heur() < successor->get_cost_and_heur())
                                 continue;
-                                // cannot do better cost than current visited node, so skip successor
-                            else
-                                open.push_back(successor);
+                            // cannot do better cost than current visited node, so skip successor
                         }
+
+                        open.push_back(successor);
                     }
                 }
 
                 visited.push_back(least);
             }
+
+            std::cout << "ERROR: Unexpected code reached\n";
+            return path;
         }
 
         int search_t::manhattan_dist(cell_t* a, cell_t* b)
@@ -239,11 +244,11 @@ namespace prx
                 adjacent.push_back( this->cells[down][j] );
 
             //debug
-            for (auto &cell : adjacent)
-            {
-                std::cout << "adj i: " << cell->row << ", adj j: " << cell->column << "\n";
-            }
-            std::cout << "end adj for: " << i << ", " << j << "\n";
+            // for (auto &cell : adjacent)
+            // {
+            //     std::cout << "adj i: " << cell->row << ", adj j: " << cell->column << "\n";
+            // }
+            // std::cout << "end adj for: " << i << ", " << j << "\n";
 
             return adjacent;
         }
