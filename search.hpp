@@ -19,13 +19,12 @@ namespace prx
             int row = -1;
             int column = -1;   
             int empty = 1; // 1 is empty, 0 is non-empty(blocked)
+
+            std::string to_string();
         };
 
         class node_t
         {
-          private:
-            // the action cost from traversing from parent to current
-            int get_cost_from_parent();
           public:
             node_t(cell_t* c, node_t* par); // the cell it refers to, parent node
             virtual ~node_t();
@@ -33,10 +32,12 @@ namespace prx
             cell_t* cell = NULL;
             node_t* parent = NULL;
             
+            // g
+            int cost = 0;
+            // h
             int heuristic = 0;
 
-            int get_cost();
-
+            // f
             int get_cost_and_heur();
 
             std::vector< std::pair<int, int> > produce_path();

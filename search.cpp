@@ -15,6 +15,14 @@ namespace prx
         cell_t::~cell_t()
         {}
 
+        std::string cell_t::to_string()
+        {
+            // row, column
+            std::string r = std::to_string(this->row);
+            std::string c = std::to_string(this->column);
+            return "(" + r + ", " + c + ")";
+        }
+
         node_t::node_t(cell_t* c, node_t* par)
         {
             cell = c;
@@ -26,24 +34,9 @@ namespace prx
             cell = NULL;
         }
 
-        int node_t::get_cost_from_parent()
-        {
-            return 1;
-        }
-
-        int node_t::get_cost()
-        {
-            if (this->parent == NULL)
-                return 0;
-            else
-            {
-                return this->parent->get_cost() + this->get_cost_from_parent();
-            }
-        }
-
         int node_t::get_cost_and_heur()
         {
-            return this->get_cost() + this->heuristic;
+            return this->cost + this->heuristic;
         }
 
         std::vector< std::pair<int, int> > node_t::produce_path()
@@ -106,14 +99,14 @@ namespace prx
             path = a_star(initial_i, initial_j, goal_i, goal_j);
 
             // debug - output path
-            std::cout << "Generated path SOLUTION: \n";
-            for (auto &pair : path)
-            {
-                std::cout << "(" << pair.first << ", " << pair.second << ") -> ";
-            }
-            std::cout << "\n";
+            // std::cout << "Generated path SOLUTION: \n";
+            // for (auto &pair : path)
+            // {
+            //     std::cout << "(" << pair.first << ", " << pair.second << ") -> ";
+            // }
+            // std::cout << "\n";
 
-        	return path;
+            return path;
         }
 
         std::vector< std::pair<int, int> > search_t::a_star(int initial_i, int initial_j, int goal_i, int goal_j)
@@ -125,9 +118,6 @@ namespace prx
             std::list< node_t* > open; // nodes which occupy the current search space
             std::list< node_t* > visited; // cells already visited before
 
-            if (initial_i == goal_i && initial_j == goal_j) // edge case where initial == goal
-                return path;
-
             cell_t* initial_cell = this->cells[initial_i][initial_j];
             node_t* initial_node = new node_t(initial_cell, NULL);
             open.push_back(initial_node); // add initial node
@@ -137,50 +127,58 @@ namespace prx
                 // search all open node for the least estimated cost
                 node_t* least = least_est_cost_node(open);
                 open.remove(least);
+                visited.push_back(least);
+
+                if (least == NULL) 
+                    std::cout << "Least should not be NULL\n";
+                // debug
+                // else
+                //     std::cout << "Least is referencing cell: " << least->cell->to_string() << "\n";
+
+                if (least->cell->row == goal_i && least->cell->column == goal_j) // check if least is goal
+                {
+                    // if goal, make sure there is no open node with a lower cost
+                    // (not implementing for now)
+                    path = least->produce_path();
+                    return path;
+                }
 
                 // produce successors
                 std::vector< cell_t* > adjacent = get_adjacent_cells(least->cell);
                 for (auto &adj_cell : adjacent)
                 {
                     node_t* successor = new node_t(adj_cell, least);
-                    if (adj_cell->row == goal_i && adj_cell->column == goal_j) // check if successor is goal
+                    successor->cost = least->cost + 1; // 1 as action cost
+
+                    // node in open list which references the same cell
+                    node_t* open_node_same_cell = find_node_by_cell(open, adj_cell);
+                    // node in visited list which references the same cell
+                    node_t* visited_node_same_cell = find_node_by_cell(visited, adj_cell);
+
+                    if (open_node_same_cell != NULL) 
                     {
-                        // debug
-                        //std::cout << "succ i: " << adj_cell->row << ", succ j: " << adj_cell->column << "\n";
-                        //std::cout << "goal i: " << goal_i << ", goal j: " << goal_j << "\n";
-
-                        // if goal, make sure there is no open node with a lower cost
-                        // (not implementing for now)
-                        path = successor->produce_path();
-                        return path;
+                        if (open_node_same_cell->cost <= successor->cost)
+                            continue;
+                        // cannot do better cost than current open node, so skip successor
                     }
-                    else
+                    else if (visited_node_same_cell != NULL)
                     {
-                        // node in open list which references the same cell
-                        node_t* open_node_same_cell = find_node_by_cell(open, adj_cell);
-                        if (open_node_same_cell != NULL) 
-                        {
-                            if (open_node_same_cell->get_cost_and_heur() < successor->get_cost_and_heur())
-                                continue;
-                            // cannot do better cost than current open node, so skip successor
-                        }
-
-                        node_t* visited_node_same_cell = find_node_by_cell(visited, adj_cell);
-                        if (visited_node_same_cell != NULL)
-                        {
-                            if (visited_node_same_cell->get_cost_and_heur() < successor->get_cost_and_heur())
-                                continue;
-                            // cannot do better cost than current visited node, so skip successor
-                        }
-
-                        open.push_back(successor);
+                        if (visited_node_same_cell->cost <= successor->cost)
+                            continue;
+                        // cannot do better cost than current visited node, so skip successor
+                        else
+                            visited.remove(visited_node_same_cell);
                     }
+
+                    open.push_back(successor);
+
                 }
 
-                visited.push_back(least);
+                
             }
 
             std::cout << "ERROR: Unexpected code reached\n";
+
             return path;
         }
 
@@ -232,16 +230,32 @@ namespace prx
             
             int left = j-1;
             if (left >= 0 && left < rows)
-                adjacent.push_back( this->cells[i][left] );
+            {
+                cell_t* cell = this->cells[i][left];
+                if (cell->empty == 1)
+                    adjacent.push_back( cell );
+            }
             int right = j+1;
             if (right >= 0 && right < rows)
-                adjacent.push_back( this->cells[i][right] );
+            {
+                cell_t* cell = this->cells[i][right];
+                if (cell->empty == 1)
+                    adjacent.push_back( cell );
+            }
             int up = i-1;
             if (up >= 0 && up < rows)
-                adjacent.push_back( this->cells[up][j] );
+            {
+                cell_t* cell = this->cells[up][j];
+                if (cell->empty == 1)
+                    adjacent.push_back( cell );
+            }
             int down = i+1;
             if (down >= 0 && down < rows)
-                adjacent.push_back( this->cells[down][j] );
+            {
+                cell_t* cell = this->cells[down][j];
+                if (cell->empty == 1)
+                    adjacent.push_back( cell );
+            }
 
             //debug
             // for (auto &cell : adjacent)
