@@ -1,0 +1,25 @@
+Question:
+Discuss in your report ways in which you can reuse information between repeated, chained searches
+in the same environment i.e., searches typically beginning from the goal of the previous search.
+
+Through repeated searches on a single environment, we could store a taboo list of visited cells. Some cells will be visited more than others.
+Take for exmaples the following environment:
+
+1 1 1 0 1 1 1
+1 1 1 0 1 1 1
+1 1 1 1 1 1 1
+
+Traveling from the LEFT side to the RIGHT size would cause us to visit the [3][2] cell every single time. 
+If the agent starts at the TOP LEFT [0][0] corner and the goal is at the MIDDLE FAR RIGHT [1][6] position, 
+then it would be faster to reach the most frequently used cell at [3][2] to create a shorter path than treating 
+all cells equally through f = g + h.
+
+To be more specific, when a cell is visited more often we can add some priority value to make better use of previous search experience.
+The taboo list of cells would not only contain the visited cells, but how many times each cell was visited. The worst case scenario is that
+we store every single cell (which is M x N cells) if all of them are being visited but this could only occur if there are no obstacles and
+if we do enough searches to visit every single cell. As the agent examines its neighbors to calculate an action, we could modify the 
+f = g + h function to incorporate the number of times visited as variable 'v' such that f = g + h + v. If this function does not result
+in any significant changes then we could multiple v by some weighted value.
+
+The taboo list could be optimized by turning it into a hashtable with a hashfunction based off of the position of the cell in our matrix 
+of cells. This would allow us to check if the neighbors of the agent are in the table of visited nodes in O(1) time.
