@@ -1,6 +1,6 @@
 #include "prx/utilities/applications/search.hpp"
 
-int expanded_cells = 0
+int expanded_cells = 0;
 
 namespace prx
 {
