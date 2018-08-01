@@ -1,6 +1,7 @@
 #include "prx/utilities/applications/search.hpp"
 
 int expanded_cells = 0;
+int examined_cells = 0;
 
 namespace prx
 {
@@ -170,13 +171,15 @@ namespace prx
                     // (not implementing for now)
                     path = least->produce_path();
                     std::cout << "Number of expanded cells: " << std::to_string(expanded_cells);
+                    std::cout << "Number of examined cells: " << std::to_string(examined_cells);
 
                     return path;
                 }
 
                 // produce successors
                 std::vector< cell_t* > adjacent = get_adjacent_cells(least->cell);
-                expanded_cells += adjacent.size();
+                expanded_cells++;
+                adjacent_cells += adjacent.size();
                 for (auto &adj_cell : adjacent)
                 {
                     node_t* successor = new node_t(adj_cell, least);
