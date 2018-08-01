@@ -73,7 +73,7 @@ namespace prx
             // traverse backwards
             while (ptr != NULL)
             {
-            	expanded_cells++
+            	path_len++
                 path.push_back(std::make_pair(ptr->cell->row, ptr->cell->column));
                 ptr = ptr->parent;
             }
