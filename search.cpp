@@ -39,7 +39,7 @@ namespace prx
         int node_t::get_heur(cell_t* goal)
         {
             // heuristic calculation
-            return manhattan_dist(this->cell, goal);
+            return 10*(manhattan_dist(this->cell, goal));
         }
 
         int node_t::get_cost_and_heur(cell_t* goal)
