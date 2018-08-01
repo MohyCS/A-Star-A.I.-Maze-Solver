@@ -176,7 +176,7 @@ namespace prx
 
                 // produce successors
                 std::vector< cell_t* > adjacent = get_adjacent_cells(least->cell);
-                expanded_cells += adjacent;
+                expanded_cells += adjacent.size();
                 for (auto &adj_cell : adjacent)
                 {
                     node_t* successor = new node_t(adj_cell, least);
