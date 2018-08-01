@@ -23,3 +23,27 @@ in any significant changes then we could multiple v by some weighted value.
 
 The taboo list could be optimized by turning it into a hashtable with a hashfunction based off of the position of the cell in our matrix 
 of cells. This would allow us to check if the neighbors of the agent are in the table of visited nodes in O(1) time.
+
+
+
+
+	Reusing information between repeated searches in the same environment can improve search times because by reusing information we can cut down of the processing required to find the most optimal path. The most simple case would be that where we start at point A and find a path to point B, and then our next search is the reverse from point B to A.
+
+			
+				0	0	0	D	0	0
+				0	0	0	0	0	0	
+				A	0	0	B	0	0
+				0	0	0	0	0	0
+				0	0	0	0	0	C	
+
+
+ If we keep track of previously traveled paths, then all we have to do is retrieve the path found and travel it in reverse. This eliminates the need to actually redo the entire algorithm. 
+	Another case where we can reuse a previously done search is where we must travel past a node that we have already traveled between. In this example, it would be the one were you must travel from B to C, where C is past A. Rather than having to find a whole new path, we can use the path from B to A, and then start the algorithm from A to C. This is analogous to a highway where since we know that the highway would get us fairly close to our destination, we can just travel along it as far as we need, and from our “exit” resume our navigation. However, we could only have data between A and D, and need to go to C. If we reused the same path from A to D and from D to C, we would be going in the complete opposite way we need to go. To solve this, we could implement a heuristic where we get an estimate of the distance between the two points and have a threshold where we would rather  save on the processing time than have the most optimal path. 
+
+
+
+
+
+
+
+
