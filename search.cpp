@@ -169,7 +169,7 @@ namespace prx
                     // if goal, make sure there is no open node with a lower cost
                     // (not implementing for now)
                     path = least->produce_path();
-                    std::cout << "Number of expanded cells: " + to_string(expanded_cells);
+                    std::cout << "Number of expanded cells: " + to_string::(expanded_cells);
 
                     return path;
                 }
