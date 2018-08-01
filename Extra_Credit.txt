@@ -38,7 +38,7 @@ The most simple case would be that where we start at point A and find a path to 
 				0	0	0	0	0	C	
 
 
- If we keep track of previously traveled paths, then all we have to do is retrieve the path found and travel it in reverse. This eliminates the need to actually redo the entire algorithm. 
+	If we keep track of previously traveled paths, then all we have to do is retrieve the path found and travel it in reverse. This eliminates the need to actually redo the entire algorithm. 
 Another case where we can reuse a previously done search is where we must travel past a node that we have already traveled between.
 In this example, it would be the one were you must travel from B to C, where C is past A. 
 Rather than having to find a whole new path, we can use the path from B to A, and then start the algorithm from A to C. 
