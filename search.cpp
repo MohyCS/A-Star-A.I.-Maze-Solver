@@ -73,13 +73,13 @@ namespace prx
             // traverse backwards
             while (ptr != NULL)
             {
-            	path_len++
+            	path_len++;
                 path.push_back(std::make_pair(ptr->cell->row, ptr->cell->column));
                 ptr = ptr->parent;
             }
 
             std::reverse(path.begin(), path.end()); 
-            std::cout << "Path length is: " + std::to_string(path_len);
+            std::cout << "Path length is: " << std::to_string(path_len);
             return path;
         }
 
@@ -169,14 +169,14 @@ namespace prx
                     // if goal, make sure there is no open node with a lower cost
                     // (not implementing for now)
                     path = least->produce_path();
-                    std::cout << "Number of expanded cells: " + to_string::(expanded_cells);
+                    std::cout << "Number of expanded cells: " << to_string::(expanded_cells);
 
                     return path;
                 }
 
                 // produce successors
                 std::vector< cell_t* > adjacent = get_adjacent_cells(least->cell);
-                expanded_cells += adjacent
+                expanded_cells += adjacent;
                 for (auto &adj_cell : adjacent)
                 {
                     node_t* successor = new node_t(adj_cell, least);
