@@ -81,6 +81,7 @@ namespace prx
 
             std::reverse(path.begin(), path.end()); 
             std::cout << "Path length is: " << std::to_string(path_len);
+            path_len = 0;
             return path;
         }
 
@@ -172,6 +173,8 @@ namespace prx
                     path = least->produce_path();
                     std::cout << "Number of expanded cells: " << std::to_string(expanded_cells);
                     std::cout << "Number of examined cells: " << std::to_string(examined_cells);
+                    expanded_cells = 0;
+                    examined_cells = 0;
 
                     return path;
                 }
