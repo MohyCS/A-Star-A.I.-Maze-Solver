@@ -1,5 +1,7 @@
 #include "prx/utilities/applications/search.hpp"
 
+int expanded_cells = 0
+
 namespace prx
 {
 
@@ -64,17 +66,20 @@ namespace prx
         std::vector< std::pair<int, int> > node_t::produce_path()
         {
             // (adds full path from start to end node included)
+        	int path_len = 0;
 
             std::vector< std::pair<int, int> > path;
             node_t* ptr = this;
             // traverse backwards
             while (ptr != NULL)
             {
+            	expanded_cells++
                 path.push_back(std::make_pair(ptr->cell->row, ptr->cell->column));
                 ptr = ptr->parent;
             }
 
             std::reverse(path.begin(), path.end()); 
+            std::cout << "Path length is: " + path_len;
             return path;
         }
 
@@ -164,11 +169,14 @@ namespace prx
                     // if goal, make sure there is no open node with a lower cost
                     // (not implementing for now)
                     path = least->produce_path();
+                    std::cout << "Number of expanded cells: " + expanded_cells;
+
                     return path;
                 }
 
                 // produce successors
                 std::vector< cell_t* > adjacent = get_adjacent_cells(least->cell);
+                expanded_cells += adjacent
                 for (auto &adj_cell : adjacent)
                 {
                     node_t* successor = new node_t(adj_cell, least);
@@ -204,7 +212,6 @@ namespace prx
             }
 
             std::cout << "ERROR: Unexpected code reached\n";
-
             return path;
         }
 
