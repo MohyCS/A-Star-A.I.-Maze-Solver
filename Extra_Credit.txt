@@ -17,14 +17,20 @@ all cells equally through f = g + h.
 
 To be more specific, when a cell is visited more often we can add some priority value to make better use of previous search experience.
 The taboo list of cells would not only contain the visited cells, but how many times each cell was visited. 
-The worst case scenario is that
-we store every single cell (which is M x N cells) if all of them are being visited but this could only occur if there are no obstacles and
-if we do enough searches to visit every single cell. As the agent examines its neighbors to calculate an action, we could modify the 
-f = g + h function to incorporate the number of times visited as variable 'v' such that f = g + h + v. If this function does not result
-in any significant changes then we could multiple v by some weighted value.
+The worst case scenario is that we store every single cell (which is M x N cells) if all of them are being visited but this 
+could only occur if there are no obstacles and if we do enough searches to visit every single cell. As the agent examines its neighbors 
+to calculate an action, we could modify the f = g + h function to incorporate the number of times visited as variable 'v' such that 
+f = g + h + v. If this function does not resultin any significant changes then we could multiple v by some weighted value.
 
 The taboo list could be optimized by turning it into a hashtable with a hashfunction based off of the position of the cell in our matrix 
-of cells. This would allow us to check if the neighbors of the agent are in the table of visited nodes in O(1) time.
+of cells. This would allow us to check if the neighbors of the agent are in the table of visited nodes in O(1) time. 
+Another simpler way of saving how many times a cell is visited is through letting the cell Class have a 'int visited' variable. 
+This may be easier since our new function can be applied to all cells when calculating A* search and not just applying it to only a list 
+of visited cells  that may not contain potential neighbors of the agent during every search. This method would be very useful for highly
+dense mazes that lead to dead ends being found through a weighted heuristic. Cells that lead to a dead end would be visited less often
+than cells that lead to valid paths, which will cause the agent to avoid these dead end cells even if heuristically they are closer to the
+goal. The only issue is that a goal may exist at a dead end after many searches so the visited attribute of each cell must be 
+balanced in our new function.
 
 
 
