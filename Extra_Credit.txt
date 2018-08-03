@@ -2,7 +2,8 @@ Question:
 Discuss in your report ways in which you can reuse information between repeated, chained searches
 in the same environment i.e., searches typically beginning from the goal of the previous search.
 
-Through repeated searches on a single environment, we could store a taboo list of visited cells. Some cells will be visited more than others.
+Through repeated searches on a single environment, we could store a taboo list of visited cells. 
+Some cells will be visited more than others.
 Take for exmaples the following environment:
 
 1 1 1 0 1 1 1
@@ -15,7 +16,8 @@ then it would be faster to reach the most frequently used cell at [3][2] to crea
 all cells equally through f = g + h.
 
 To be more specific, when a cell is visited more often we can add some priority value to make better use of previous search experience.
-The taboo list of cells would not only contain the visited cells, but how many times each cell was visited. The worst case scenario is that
+The taboo list of cells would not only contain the visited cells, but how many times each cell was visited. 
+The worst case scenario is that
 we store every single cell (which is M x N cells) if all of them are being visited but this could only occur if there are no obstacles and
 if we do enough searches to visit every single cell. As the agent examines its neighbors to calculate an action, we could modify the 
 f = g + h function to incorporate the number of times visited as variable 'v' such that f = g + h + v. If this function does not result
@@ -27,25 +29,36 @@ of cells. This would allow us to check if the neighbors of the agent are in the 
 
 
 
-	Reusing information between repeated searches in the same environment can improve search times because by reusing information we can cut down of the processing required to find the most optimal path. 
-The most simple case would be that where we start at point A and find a path to point B, and then our next search is the reverse from point B to A.
+	Reusing information between repeated searches in the same environment can improve search times because by reusing information 
+we can cut down of the processing required to find the most optimal path. The most simple case would be that where we start at point A 
+and find a path to point B, and then our next search is the reverse from point B to A.
 
 			
-				0	0	0	D	0	0
-				0	0	0	0	0	0	
-				A	0	0	B	0	0
-				0	0	0	0	0	0
-				0	0	0	0	0	C	
+				1	1	1	D	1	0
+				1	0	0	0	1	1	
+				A	1	1	B	1	1
+				1	0	0	0	1	1
+				1	0	0	0	1	C	
 
 
-	If we keep track of previously traveled paths, then all we have to do is retrieve the path found and travel it in reverse. This eliminates the need to actually redo the entire algorithm. 
-Another case where we can reuse a previously done search is where we must travel past a node that we have already traveled between.
-In this example, it would be the one were you must travel from B to C, where C is past A. 
-Rather than having to find a whole new path, we can use the path from B to A, and then start the algorithm from A to C. 
-This is analogous to a highway where since we know that the highway would get us fairly close to our destination, we can just travel along it as far as we need, and from our “exit” resume our navigation. 
+	If we keep track of previously traveled paths, then all we have to do is retrieve the path found and travel it in reverse. We know
+that a previously saved path is useful in computing a brand new path if the goal cell or the start cell is contained in a previously saved 
+path. This eliminates the need to actually redo the entire algorithm. 
+Another case where we can reuse a previously done search is where we must travel past a cell that we have already visited.
+In this above example, it would be the one where you must travel from A to C, where C is past B. 
+Rather than having to find a whole new path, we can use the path from B to C, and then start the algorithm from A to B. Now we can combine
+the path from A to B and the path from B to C to create a new optimal from A to C.
+This is analogous to a highway where since we know that the highway would get us fairly close to our destination, we can just travel 
+along it as far as we need, and from our “exit” resume our navigation. 
 However, we could only have data between A and D, and need to go to C. 
-If we reused the same path from A to D and from D to C, we would be going in the complete opposite way we need to go. 
-To solve this, we could implement a heuristic where we get an estimate of the distance between the two points and have a threshold where we would rather save on the processing time than have the most optimal path. 
+If we reused the same path from A to D and from D to C, we would be going in the complete opposite way we need to go which is not optimal.
+
+To solve this, we could implement a function where we get an estimate of the distance between an existing path and the desired goal cell
+and have a threshold where we would rather save on the processing time than have the most optimal path. We could use a different threshold
+to determine when a previously saved path is actually less optimal than performing a brand new A* search.
+After recording a large number of paths, the probability of having a pre-existing path to solve a new search problem would increase and
+A* search would be used less often. Processing/Run time would be decreased but a drawback is how much memory is being consumed with 
+every saved path.
 
 
 
