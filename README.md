@@ -21,8 +21,8 @@
 ---
 
 ### Notes on current behavior:
-- Does not actively check for blocked (non-empty) cells. (Maybe use high cost or heuristic to accomplish this?)
-- Returns solution path at the first encounter of a goal state, this may not be desired (if you want to check if there are other nodes in the open list with a lower cost path)
+- Actively check for blocked (non-empty) cells.
+- Returns solution path at the first encounter of a goal state.
 
 ### Classes
 - **cell_t**
